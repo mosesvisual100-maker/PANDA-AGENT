@@ -1,0 +1,30 @@
+# Optional: Koyeb can deploy straight from a repo without this file.
+# Kept so the port and health check are explicit and reviewable.
+name: panda-proxy
+services:
+  - name: panda-proxy
+    type: web
+    instance_types:
+      - type: free
+    ports:
+      - port: 3000
+        protocol: http
+    routes:
+      - path: /
+    health_checks:
+      - grace_period: 10
+        interval: 30
+        restart_threshold: 3
+        timeout: 5
+        type: http
+        http:
+          path: /health
+    regions:
+      - was
+    env:
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_MODEL
+        value: llama-3.3-70b-versatile
+      - key: PORT
+        value: "3000"
