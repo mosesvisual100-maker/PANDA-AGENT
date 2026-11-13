@@ -27,13 +27,13 @@ function check(name, cond, detail) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function waitFor(url, tries = 40) {
+async function waitFor(url, tries = 60) {
   for (let i = 0; i < tries; i++) {
     try {
       const r = await fetch(url);
       if (r.ok) return true;
     } catch {}
-    await sleep(200);
+    await sleep(400);
   }
   return false;
 }

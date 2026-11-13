@@ -1,18 +1,25 @@
+# Render blueprint. Committing this means Render auto-configures the service:
+# no manual runtime/build/start/health settings — you only add the API key.
 services:
   - type: web
     name: panda-proxy
     runtime: node
     plan: free
     region: oregon
+    branch: main
     buildCommand: npm install
+    # `npm start` runs `node server.js`, which binds 0.0.0.0:$PORT as Render requires.
     startCommand: npm start
     healthCheckPath: /health
+    autoDeploy: true
     envVars:
       - key: NODE_VERSION
         value: "20"
+      # Groq: free and fast. Agent tasks make many sequential calls, so latency compounds.
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_MODEL
+        value: llama-3.3-70b-versatile
+      # Set this in the Render dashboard when prompted — never commit the key.
       - key: LLM_API_KEY
         sync: false
-      - key: LLM_BASE_URL
-        value: https://api.openai.com/v1
-      - key: LLM_MODEL
-        value: gpt-4o-mini
